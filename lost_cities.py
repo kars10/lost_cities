@@ -5,9 +5,10 @@ import re
 from strategy import *
 ############################################################
 # This module sets up a framework for playing lost cities  #
-# game of lost cities.                                     #
 ############################################################
 
+
+        
 # Card class.  
 class card:
     """A simple card class"""
@@ -56,29 +57,7 @@ class card:
 
         return card_str
 
-    def __repr__(self):
-                # Card value string. the \x1b[*** chooses color appropriately
-        # while the \x1b[0m sets values back to default
-        card_str = ""
-        if ((self.color)[0] == "r" or (self.color)[0] == "R"):
-            card_str = card_str + "\x1b[31m"
-        elif ((self.color)[0] == "b" or (self.color)[0] == "B"):
-            card_str = card_str + "\x1b[34m"
-        elif ((self.color)[0] == "w" or (self.color)[0] == "W"):
-            card_str = card_str + "\x1b[37m"
-        elif ((self.color)[0] == "g" or (self.color)[0] == "G"):
-            card_str = card_str + "\x1b[32m"
-        elif ((self.color)[0] == "y" or (self.color)[0] == "Y"):
-            card_str = card_str + "\x1b[33m"
-
-        if self.value == 1:
-            card_str = card_str + str(self.color)[0] + "i"
-        else:
-            card_str = card_str + str(self.color)[0] + str(self.value)
-        
-        card_str = card_str + "\x1b[0m"
-
-        return card_str
+    __repr__ = __str__
         
     def __lt__(self, other):
         # return true if self < other
@@ -89,8 +68,7 @@ class card:
             return self.value < other.value
 
     def __eq__(self, other):
-        return (isinstance(other, self.__class__) and self.__dict__ ==
-        other.__dict__)
+        return (isinstance(other, self.__class__) and self.__dict__ == other.__dict__)
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -225,20 +203,8 @@ class game_board:
         self.yellow_discard.append('\x1b[33m-\x1b[0m')
 
         for color in self.color_list:
-            for i in range(10):
-                if i+1 == 1:
-                    # Three investments
-                    c1 = card(color, 1)
-                    c2 = card(color, 1)
-                    c3 = card(color, 1)
-                    self.deck.append(c1)
-                    self.deck.append(c2)
-                    self.deck.append(c3)
-                else:
-                    # Once card for all others
-                    c = card(color, i+1)
-                    self.deck.append(c)
-
+            for value in [1,1,1,2,3,4,5,6,7,8,9,10]: # 3x investments (1), 1x each card 2-10
+                self.deck.append(card(color, value))
 
         # Shuffle self.deck
         random.shuffle(self.deck)
@@ -558,7 +524,7 @@ class game_board:
 def play_game(player_a, a_play_strat, a_draw_strat, player_b, b_play_strat, b_draw_strat):
     # Initializations
     board = game_board()
-    game_not_ended = True
+    game_over = False
     
     color_list = ["red", "green", "white", "blue", "yellow"]
       
@@ -567,7 +533,7 @@ def play_game(player_a, a_play_strat, a_draw_strat, player_b, b_play_strat, b_dr
     # Deal initial hands
 
     # Begin Game
-    while game_not_ended:
+    while not game_over:
         # Turn loop
         # Do not print out board info to screen
         # Initialize hand a's play values
@@ -575,12 +541,12 @@ def play_game(player_a, a_play_strat, a_draw_strat, player_b, b_play_strat, b_dr
         if len(board.deck) != 0:
             success = computer_turn('a', board, a_play_strat, a_draw_strat)
         else:
-            game_not_ended = False
+            game_over = True
 
         if len(board.deck) != 0:
             success = computer_turn('b', board, b_play_strat, b_draw_strat)
         else:
-            game_not_ended = False
+            game_over = True
 
     print str(board)
     print str(getattr(board, "hand_a"))
@@ -590,11 +556,13 @@ def play_game(player_a, a_play_strat, a_draw_strat, player_b, b_play_strat, b_dr
     b_score = board.calc_score('b')
     
     if a_score > b_score:
-        return str(player_a) + ' ' + str(a_score) + ' ' + str(b_score)
-    elif a_score < b_score:
-        return str(player_b) + ' ' + str(a_score) + ' ' + str(b_score)
+        winner = 'A'
+    elif b_score > a_score:
+        winner = 'B'
     else:
-        return 't ' + str(a_score) + ' ' + str(b_score)
+        winner = 'T'
+        
+    return {'winner': winner, 'a_score': a_score, 'b_score': b_score}
 
 def computer_turn(player, board, play_strat, draw_strat, suppress_output=True):
     discard = False

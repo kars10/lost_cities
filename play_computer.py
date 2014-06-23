@@ -8,28 +8,29 @@ from lost_cities import *
 # initialize board (use a dictionary)
 board = game_board()
 # initialize other variables
-game_not_ended = True
+game_over = False
 
 print "Welcome to Aaron Adcock's simulation of the Lost Cities game"
-print "You will be player a"
-print "Computer difficulty options are currently: simple"
+print "You will be player A"
+
 computer_play_strat = "simple"
 computer_draw_strat = "simple"
+print "Computer Play Strategy: \"{}\"".format(computer_play_strat)
+print "Computer Draw Strategy: \"{}\"".format(computer_draw_strat)
 
 
 # Begin playing the game
 # TODO: Add a strategy analysis portion
-while game_not_ended:
+while not game_over:
     # Print appropriate info
     print ""
     print board
     
-    print "Player a's hand:"
+    print "Player A's hand:"
     print board.hand_a
 
     print "Number of cards in deck: " + str(len(board.deck))
-    # Player a's turn, most of this code is just to make sure that the
-    # card is valid
+    # Player A's turn, most of this code is just to make sure that the card is valid
     print "Play a card (type discard to discard and type exit to leave)"    
     card_string = raw_input()
     played_card = card('blue', 2)
@@ -93,13 +94,13 @@ while game_not_ended:
 
 
     if len(board.deck) == 0:
-        game_not_ended = False
+        game_over = True
     # B's turn
-    if game_not_ended:
+    if not game_over:
         success = computer_turn('b', board, computer_play_strat, computer_draw_strat, False)
 
     if len(board.deck) == 0:
-        game_not_ended = False
+        game_over = True
 
 print ""
 print board

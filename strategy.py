@@ -1,6 +1,6 @@
 ##################################################################
 # This file contains strategies.  Currently the interface to these
-# functions is achieved by additing to the if-statements in the
+# functions is achieved by adding to the if-statements in the
 # choose_play and choose_draw function.  A string is used to access
 # the appropriate strategy.
 ##################################################################

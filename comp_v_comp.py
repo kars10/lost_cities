@@ -37,38 +37,36 @@ a_last_avg_score = 0
 b_last_avg_score = 0
 
 for x in range(num_games):
-    # Do half of the games with a first player and half with b first
+    # Do half of the games with A plays first and half with B plays first
     if x < (num_games/2):
         result = play_game('a', a_play_strat, a_draw_strat,'b', b_play_strat, b_draw_strat)
-        result = result.split()
-        if result[0] == 'a':
+        if result['winner'] == 'A':
             a_first_wins += 1
-        elif result[0] == 't':
+        elif result['winner'] == 'T':
             ties += 1
-        elif result[0] == 'b':
+        elif result['winner'] == 'B':
             b_last_wins += 1
 
-        a_first_avg_score += int(result[1])
-        b_last_avg_score += int(result[2])
+        a_first_avg_score += int(result['a_score'])
+        b_last_avg_score += int(result['b_score'])
     else:
         result = play_game('b', b_play_strat, b_draw_strat, 'a', a_play_strat, a_draw_strat)
-        result = result.split()
-        if result[0] == 'b':
-            b_first_wins += 1
-        elif result[0] == 't':
-            ties += 1
-        elif result[0] == 'a':
+        if result['winner'] == 'A':
             a_last_wins += 1
+        elif result['winner'] == 'T':
+            ties += 1
+        elif result['winner'] == 'B':
+            b_first_wins += 1
 
-        b_first_avg_score += int(result[1])
-        a_last_avg_score += int(result[2])
+        b_first_avg_score += int(result['b_score'])
+        a_last_avg_score += int(result['a_score'])
 
 # Present statistical results
-print "Results: Player a won " + str(1.0 * (a_first_wins + a_last_wins) / num_games) + " Player b won " + str(1.0 * (b_first_wins + b_last_wins) / num_games)
+print "Results: Player A won " + str(1.0 * (a_first_wins + a_last_wins) / num_games) + " Player B won " + str(1.0 * (b_first_wins + b_last_wins) / num_games)
 print "Ties: " + str(ties)
-print "Player a's average score was " + str(1.0 * (a_first_avg_score + a_last_avg_score) / num_games)
-print "Player b's average score was " + str(1.0 * (b_first_avg_score + b_last_avg_score) / num_games)
-print "When Player a goes first, a wins " + str((2.0 * a_first_wins) / num_games)
-print "When Player a goes first, a's average score is " + str((2.0 * a_first_avg_score) / num_games) + " while b's average is " + str((2.0 * b_last_avg_score) / num_games)
-print "When Player b goes first, b wins " + str((2.0 * b_first_wins) / num_games)
-print "When Player b goes first, b's average score is " + str((2.0 * b_first_avg_score) / num_games) + " while a's average is " + str((2.0 * a_last_avg_score) / num_games)
+print "Player A's average score was " + str(1.0 * (a_first_avg_score + a_last_avg_score) / num_games)
+print "Player B's average score was " + str(1.0 * (b_first_avg_score + b_last_avg_score) / num_games)
+print "When Player A goes first, A wins " + str((2.0 * a_first_wins) / num_games)
+print "When Player A goes first, A's average score is " + str((2.0 * a_first_avg_score) / num_games) + " while B's average is " + str((2.0 * b_last_avg_score) / num_games)
+print "When Player B goes first, B wins " + str((2.0 * b_first_wins) / num_games)
+print "When Player B goes first, B's average score is " + str((2.0 * b_first_avg_score) / num_games) + " while A's average is " + str((2.0 * a_last_avg_score) / num_games)
